@@ -60,6 +60,22 @@ public class EncryptionUtils {
         return Base64.getEncoder().encodeToString(bytesAes);
     }
 
+    public static String encodeByAES(String content, String key, String algorithm) throws Exception {
+        //1.构造密钥生成器，指定为AES算法,不区分大小写
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
+        //2.根据encodeRules规则初始化密钥生成器，这里的数字可以是128,192,256，数字越大越安全。
+        keyGenerator.init(128, new SecureRandom(key.getBytes(UTF)));
+        //3.生成AES密钥
+        SecretKeySpec keySpec = new SecretKeySpec(keyGenerator.generateKey().getEncoded(), AES);
+        //4.根据指定算法AES自成密码器
+        Cipher cipher = Cipher.getInstance(algorithm);
+        //5.初始化密码器，第一个参数为加密(Encrypt_mode)或者解密解密(Decrypt_mode)操作，第二个参数为使用的KEY
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+        //6.获取加密内容的字节数组(这里要设置为utf-8)不然内容中如果有中文和英文混合中文就会解密为乱码
+        byte[] bytesAes = cipher.doFinal(content.getBytes(UTF));
+        return Base64.getEncoder().encodeToString(bytesAes);
+    }
+
 
     public static String decodeByAES(String content, String key) throws Exception {
         //1.构造密钥生成器，指定为AES算法,不区分大小写
@@ -70,6 +86,23 @@ public class EncryptionUtils {
         SecretKeySpec keySpec = new SecretKeySpec(keyGenerator.generateKey().getEncoded(), AES);
         //4.根据指定算法AES自成密码器
         Cipher cipher = Cipher.getInstance(AES_CIPHER_MODE);
+        //5.初始化密码器，第一个参数为加密(Encrypt_mode)或者解密解密(Decrypt_mode)操作，第二个参数为使用的KEY
+        cipher.init(Cipher.DECRYPT_MODE, keySpec);
+        //6.将加密并编码后的内容解码成字节数组
+        byte[] byteContent = Base64.getDecoder().decode(content);
+        byte[] decryptBytes = cipher.doFinal(byteContent);
+        return new String(decryptBytes, UTF);
+    }
+
+    public static String decodeByAES(String content, String key, String algorithm) throws Exception {
+        //1.构造密钥生成器，指定为AES算法,不区分大小写
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
+        //2.根据encodeRules规则初始化密钥生成器，这里的数字可以是128、192、256，数字越大越安全。
+        keyGenerator.init(128, new SecureRandom(key.getBytes(UTF)));
+        //3.生成AES密钥
+        SecretKeySpec keySpec = new SecretKeySpec(keyGenerator.generateKey().getEncoded(), AES);
+        //4.根据指定算法AES自成密码器
+        Cipher cipher = Cipher.getInstance(algorithm);
         //5.初始化密码器，第一个参数为加密(Encrypt_mode)或者解密解密(Decrypt_mode)操作，第二个参数为使用的KEY
         cipher.init(Cipher.DECRYPT_MODE, keySpec);
         //6.将加密并编码后的内容解码成字节数组

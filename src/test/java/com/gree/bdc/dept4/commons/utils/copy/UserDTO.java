@@ -33,4 +33,5 @@ public class UserDTO {
     public void setJob(String job) {
         this.job = job;
     }
+
 }

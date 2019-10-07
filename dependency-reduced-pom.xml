@@ -4,11 +4,21 @@
   <groupId>com.gree</groupId>
   <artifactId>commons</artifactId>
   <name>commons</name>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <build>
+    <defaultGoal>compile</defaultGoal>
     <directory>${project.basedir}/target</directory>
     <finalName>gree-commons-${version}</finalName>
     <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.2.1</version>
